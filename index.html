@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Moldura com Foto</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #f7f7f7;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .moldura-container {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      margin: 20px auto;
+    }
+
+    video, canvas, img {
+      width: 100%;
+      border-radius: 20px;
+    }
+
+    /* Botões */
+    .botoes {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    button {
+      padding: 12px 18px;
+      font-size: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #ffb6c1;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ffa7b4;
+    }
+
+    /* Suavização da pele */
+    .suavizar-pele {
+      filter: blur(1px) brightness(1.05) contrast(1.03);
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Moldura do Gabriel</h2>
+
+  <div class="moldura-container">
+    <video id="camera" autoplay playsinline></video>
+    <canvas id="foto"></canvas>
+
+    <!-- A moldura final -->
+    <img id="moldura" src="moldura.png" class="moldura-img">
+  </div>
+
+  <div class="botoes">
+    <button onclick="tirarFoto()">📸 Tirar Foto</button>
+    <button onclick="virarCamera()">🔄 Virar Câmera</button>
+  </div>
+
+<script>
+  let usandoFrontal = true;
+  const video = document.getElementById("camera");
+  const canvas = document.getElementById("foto");
+  const ctx = canvas.getContext("2d");
+
+  iniciarCamera();
+
+  function iniciarCamera() {
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: usandoFrontal ? "user" : "environment"
+      }
+    }).then(stream => {
+      video.srcObject = stream;
+    });
+  }
+
+  function virarCamera() {
+    usandoFrontal = !usandoFrontal;
+    iniciarCamera();
+  }
+
+  function tirarFoto() {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    ctx.drawImage(video, 0, 0);
+
+    // Suavização da pele
+    canvas.classList.add("suavizar-pele");
+  }
+</script>
+
+</body>
+</html>
