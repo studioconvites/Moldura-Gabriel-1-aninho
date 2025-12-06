@@ -15,7 +15,7 @@
       font-family: sans-serif;
     }
 
-    #video, #overlay {
+    #video, #overlay, #beautyCanvas {
       position: absolute;
       width: 100vw;
       height: 100vh;
@@ -92,28 +92,30 @@
 
 <body>
   <video id="video" autoplay muted playsinline></video>
-  <IMG ID="Sobreposição" SRC="moldura.png" Alt.="Moldura" />
+  <canvas id="beautyCanvas"></canvas>
+  <img id="overlay" src="moldura.png" alt="moldura" />
 
-  <Div. ID="botões">
-    <Botão ID="Switch-Camera">🔄</Botão>
-    <Botão ID="Captura">📸</Botão>
-  </Div.>
+  <div id="buttons">
+    <button id="switch-camera">🔄</button>
+    <button id="capture">📸</button>
+  </div>
 
-  <Tela ID="canvas" Estilo="Exibição: nenhuma;"
+  <canvas id="canvas" style="display:none;"></canvas>
 
-">"preview-container">
-    <IMG ID="Foto-previsão" />
-    <Botão ID="Save-BN">Salvar na galeria</Botão>
-    <Botão ID="Retry-BN">Tirar outra</Botão>
+  <div id="preview-container">
+    <img id="photo-preview" />
+    <button id="save-btn">Salvar na galeria</button>
+    <button id="retry-btn">Tirar outra</button>
 
-    <Div. ID="Instruções">
-       Se estiver no iPhone: <Br.>
-       Toque e segure a imagem e selecione “Salvar na Fototeca”. 
-    </Div.>
-  </Div.>
+    <div id="instructions">
+      Se estiver no iPhone:<br>
+      Toque e segure a imagem e selecione “Salvar na Fototeca”.
+    </div>
+  </div>
 
   <script>
     const video = document.getElementById('video');
+    const beautyCanvas = document.getElementById('beautyCanvas');
     const overlay = document.getElementById('overlay');
     const canvas = document.getElementById('canvas');
 
@@ -129,24 +131,43 @@
     let usingFrontCamera = true;
     let stream;
 
-    const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const ctxBeauty = beautyCanvas.getContext("2d");
 
     async function startCamera() {
       if (stream) stream.getTracks().forEach(t => t.stop());
 
       stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: usingFrontCamera ? 'user' : 'environment',
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+          facingMode: usingFrontCamera ? "user" : "environment",
         }
       });
 
       video.srcObject = stream;
-      video.style.transform = usingFrontCamera ? 'scaleX(-1)' : 'scaleX(1)';
-      overlay.style.transform = 'scaleX(1)';
+      video.style.transform = usingFrontCamera ? "scaleX(-1)" : "scaleX(1)";
+
+      requestAnimationFrame(beautyLoop);
     }
 
+    // 📌 Loop de suavização da pele
+    function beautyLoop() {
+      const w = beautyCanvas.width = video.videoWidth;
+      const h = beautyCanvas.height = video.videoHeight;
+
+      if (w && h) {
+        ctxBeauty.filter = "blur(4px) brightness(1.05)"; 
+        ctxBeauty.drawImage(video, 0, 0, w, h);
+
+        ctxBeauty.globalAlpha = 0.65; 
+        ctxBeauty.filter = "none";
+        ctxBeauty.drawImage(video, 0, 0, w, h);
+
+        ctxBeauty.globalAlpha = 1;
+      }
+
+      requestAnimationFrame(beautyLoop);
+    }
+
+    // Trocar câmera
     switchCameraBtn.onclick = () => {
       usingFrontCamera = !usingFrontCamera;
       startCamera();
@@ -154,39 +175,27 @@
 
     // Tirar foto
     captureBtn.onclick = () => {
-      const track = stream.getVideoTracks()[0];
-      const settings = track.getSettings();
-      canvas.width = settings.width;
-      canvas.height = settings.height;
+      const w = canvas.width = beautyCanvas.width;
+      const h = canvas.height = beautyCanvas.height;
 
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
 
-      if (usingFrontCamera) {
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
-      }
+      ctx.drawImage(beautyCanvas, 0, 0, w, h);
+      ctx.drawImage(overlay, 0, 0, w, h);
 
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.drawImage(overlay, 0, 0, canvas.width, canvas.height);
-
-      photoPreview.src = canvas.toDataURL('image/png');
-      previewContainer.style.display = 'flex';
+      photoPreview.src = canvas.toDataURL("image/png");
+      previewContainer.style.display = "flex";
     };
 
     saveBtn.onclick = () => {
-      const link = document.createElement('a');
-      link.download = 'foto-moldura.png';
+      const link = document.createElement("a");
+      link.download = "foto-moldura.png";
       link.href = photoPreview.src;
       link.click();
-
-      if (isiOS) instructions.style.display = 'block';
     };
 
     retryBtn.onclick = () => {
-      previewContainer.style.display = 'none';
-      instructions.style.display = 'none';
+      previewContainer.style.display = "none";
     };
 
     startCamera();
