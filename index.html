@@ -86,12 +86,13 @@
       text-align: center;
       max-width: 90%;
     }
+
   </style>
 </head>
 
 <body>
   <video id="video" autoplay muted playsinline></video>
-  <img id="overlay" src="moldura.png" alt="moldura" />
+  <img id="overlay" src="moldura.png" alt="Moldura" />
 
   <div id="buttons">
     <button id="switch-camera">🔄</button>
@@ -99,7 +100,6 @@
   </div>
 
   <canvas id="canvas" style="display:none;"></canvas>
-  <canvas id="softCanvas" style="display:none;"></canvas>
 
   <div id="preview-container">
     <img id="photo-preview" />
@@ -116,7 +116,6 @@
     const video = document.getElementById('video');
     const overlay = document.getElementById('overlay');
     const canvas = document.getElementById('canvas');
-    const softCanvas = document.getElementById('softCanvas');
 
     const switchCameraBtn = document.getElementById('switch-camera');
     const captureBtn = document.getElementById('capture');
@@ -130,95 +129,64 @@
     let usingFrontCamera = true;
     let stream;
 
-      const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent); cabeça>const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent); const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent); const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent); cabeça>const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent); const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> async function startCamera() {
-    <title>ANTHONY FAZ 1 ANINHO</title>  title>ANTHONY FAZ 1 ANINHO</title>  title>ANTHONY FAZ 1 ANINHO</title> 
+    async function startCamera() {
+      if (stream) stream.getTracks().forEach(t => t.stop());
 
- <estilo> stream = await navigator.mediaDevices.getUserMedia({
-  * { margem: 0; preenchimento: 0; tamanho da caixa: caixa de borda; } video: {* { margem: 0; preenchimento: 0; tamanho da caixa: caixa de borda; } video: {
- HTML, Corpo { facingMode: usingFrontCamera ? 'user' : 'environment',
- Largura: 100%; width: { ideal: 1920 },
- altura: 100%; height: { ideal: 1080 }
- transbordamento: oculto; }
- fundo: #000; });
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: usingFrontCamera ? 'user' : 'environment',
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        }
+      });
 
-     } video.srcObject = stream;
+      video.srcObject = stream;
       video.style.transform = usingFrontCamera ? 'scaleX(-1)' : 'scaleX(1)';
-   #vídeo, # sobreposição { overlay.style.transform = 'scaleX(1)'; #vídeo, # sobreposição { overlay.style.transform = 'scaleX(1)';#vídeo, # sobreposição { overlay.style.transform = 'scaleX(1)';sobreposição { overlay.style.transform = 'scaleX(1)'; #vídeo, # sobreposição { overlay.style.transform = 'scaleX(1)';
-    Posição: Absoluto; }Posição: Absoluto; }  Posição: Absoluto; }Posição: Absoluto; } Posição: Absoluto; } Posição: Absoluto; }Posição: Absoluto; } 
+      overlay.style.transform = 'scaleX(1)';
+    }
 
- Altura: 100Vh; switchCameraBtn.onclick = () => {
-    Object-Fit: cobertura; usingFrontCamera = !usingFrontCamera;Object-Fit: cobertura; usingFrontCamera = !usingFrontCamera;  Object-Fit: cobertura; usingFrontCamera = !usingFrontCamera;Object-Fit: cobertura; usingFrontCamera = !usingFrontCamera; Object-Fit: cobertura; usingFrontCamera = !usingFrontCamera; Object-Fit: cobertura; usingFrontCamera = !usingFrontCamera;Object-Fit: cobertura; usingFrontCamera = !usingFrontCamera; 
-     } startCamera();
+    switchCameraBtn.onclick = () => {
+      usingFrontCamera = !usingFrontCamera;
+      startCamera();
     };
 
-       // Função para suavização de pele // Função para suavização de pele  // Função para suavização de pele // Função para suavização de pele // Função para suavização de pele  // Função para suavização de pele // Função para suavização de pele 
- # botões { function applySkinSoftening(originalCtx, softCtx, w, h) {
-         // 1 — copiar a imagem original // 1 — copiar a imagem original Posição: Absoluto; // 1 — copiar a imagem original  Posição: Absoluto; // 1 — copiar a imagem original  // 1 — copiar a imagem original // 1 — copiar a imagem original Posição: Absoluto; // 1 — copiar a imagem original 
- Baixo: 50px; softCtx.drawImage(canvas, 0, 0, w, h);
-
-         // 2 — aplicar blur leve para suavizar // 2 — aplicar blur leve para suavizar Exibição: Flex; // 2 — aplicar blur leve para suavizar  Exibição: Flex; // 2 — aplicar blur leve para suavizar  // 2 — aplicar blur leve para suavizar // 2 — aplicar blur leve para suavizar Exibição: Flex; // 2 — aplicar blur leve para suavizar 
-       justify-content: center; 
- Gap: 40px; softCtx.drawImage(canvas, 0, 0, w, h);
-
-          // 3 — voltar filtro ao normal // 3 — voltar filtro ao normal }   // 3 — voltar filtro ao normal // 3 — voltar filtro ao normal }  // 3 — voltar filtro ao normal  // 3 — voltar filtro ao normal // 3 — voltar filtro ao normal }  // 3 — voltar filtro ao normal // 3 — voltar filtro ao normal }  
-      softCtx.filter = "none";
-
-         // 4 — reduzir a força da suavização (mistura) // 4 — reduzir a força da suavização (mistura) Largura: 70px;  // 4 — reduzir a força da suavização (mistura)  // 4 — reduzir a força da suavização (mistura) // 4 — reduzir a força da suavização (mistura) Largura: 70px; 
-          originalCtx.globalAlpha = 0.55;  originalCtx.globalAlpha = 0.55; // intensidade da maciez originalCtx.globalAlpha = 0.55; // intensidade da maciez altura: 70px; originalCtx.globalAlpha = 0.55; // intensidade da maciez  // intensidade da maciez originalCtx.globalAlpha = 0.55; // intensidade da maciez altura: 70px; originalCtx.globalAlpha = 0.55; // intensidade da maciez  originalCtx.globalAlpha = 0.55; // intensidade da maciez  originalCtx.globalAlpha = 0.55; // intensidade da maciez originalCtx.globalAlpha = 0.55; // intensidade da maciez altura: 70px; originalCtx.globalAlpha = 0.55; // intensidade da maciez 
-   raio de fronteira: 50%; originalCtx.drawImage(softCanvas, 0, 0, w, h); raio de fronteira: 50%; originalCtx.drawImage(softCanvas, 0, 0, w, h);raio de fronteira: 50%; originalCtx.drawImage(softCanvas, 0, 0, w, h); raio de fronteira: 50%; originalCtx.drawImage(softCanvas, 0, 0, w, h);
-  Fronteira: nenhuma; originalCtx.globalAlpha = 1;Fronteira: nenhuma; originalCtx.globalAlpha = 1;
-  Fundo: branco; }Fundo: branco; }
-
-        // Tirar foto com suavização // Tirar foto com suavização // Tirar foto com suavização   // Tirar foto com suavização // Tirar foto com suavização // Tirar foto com suavização  cursor: ponteiro; // Tirar foto com suavização  // Tirar foto com suavização // Tirar foto com suavização // Tirar foto com suavização  // Tirar foto com suavização // Tirar foto com suavização // Tirar foto com suavização  
- Caixa-sombra: 0.4px 10px RGBA (0,0,0,0.3); captureBtn.onclick = () => {
-     } const track = stream.getVideoTracks()[0];
+    // Tirar foto
+    captureBtn.onclick = () => {
+      const track = stream.getVideoTracks()[0];
       const settings = track.getSettings();
+      canvas.width = settings.width;
+      canvas.height = settings.height;
 
- Posição: Absoluto; canvas.width = settings.width;
- Baixo: 40px; canvas.height = settings.height;
+      const ctx = canvas.getContext('2d');
 
- transformar: traduzirX (-50%); softCanvas.width = settings.width;
- índice Z: 11; softCanvas.height = settings.height;
+      if (usingFrontCamera) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      }
 
-  Flex-direção: coluna; const ctx = canvas.getContext("2d");Flex-direção: coluna; const ctx = canvas.getContext("2d");
-  Alinhar-itens: centro; const softCtx = softCanvas.getContext("2d");Alinhar-itens: centro; const softCtx = softCanvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-         // espelhar se for câmera frontal // espelhar se for câmera frontal  // espelhar se for câmera frontal // espelhar se for câmera frontal // espelhar se for câmera frontal  // espelhar se for câmera frontal // espelhar se for câmera frontal 
-  #foto-previsão { if (usingFrontCamera) {#foto-previsão { if (usingFrontCamera) {
- Largura: 85VW; ctx.translate(canvas.width, 0);
- Largura máxima: 280px; ctx.scale(-1, 1);
-  Borda: 3px branco sólido; }Borda: 3px branco sólido; }
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.drawImage(overlay, 0, 0, canvas.width, canvas.height);
 
-          // desenhar o vídeo // desenhar o vídeo // desenhar o vídeo   // desenhar o vídeo // desenhar o vídeo // desenhar o vídeo  margem-faixo: 8px; // desenhar o vídeo  // desenhar o vídeo // desenhar o vídeo // desenhar o vídeo  
-     } ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      photoPreview.src = canvas.toDataURL('image/png');
+      previewContainer.style.display = 'flex';
+    };
 
- #save-btn, #retry-btn { ctx.setTransform(1, 0, 0, 1, 0, 0);
+    saveBtn.onclick = () => {
+      const link = document.createElement('a');
+      link.download = 'foto-moldura.png';
+      link.href = photoPreview.src;
+      link.click();
 
-          // aplicar suavização de pele // aplicar suavização de pele // aplicar suavização de pele   // aplicar suavização de pele // aplicar suavização de pele // aplicar suavização de pele  cor: branco; // aplicar suavização de pele  // aplicar suavização de pele // aplicar suavização de pele // aplicar suavização de pele  // aplicar suavização de pele // aplicar suavização de pele // aplicar suavização de pele  
- raio de fronteira: 6px; applySkinSoftening(ctx, softCtx, canvas.width, canvas.height);
+      if (isiOS) instructions.style.display = 'block';
+    };
 
-          // aplicar moldura // aplicar moldura // aplicar moldura  Tamanho da fonte: 15px; // aplicar moldura  // aplicar moldura // aplicar moldura // aplicar moldura  Tamanho da fonte: 15px; // aplicar moldura  // aplicar moldura // aplicar moldura // aplicar moldura  // aplicar moldura // aplicar moldura // aplicar moldura  Tamanho da fonte: 15px; // aplicar moldura  // aplicar moldura // aplicar moldura // aplicar moldura 
- Margem-topo: 5px; ctx.drawImage(overlay, 0, 0, canvas.width, canvas.height);
-
-          // gerar imagem final // gerar imagem final }  // gerar imagem final  // gerar imagem final // gerar imagem final }  // gerar imagem final  // gerar imagem final // gerar imagem final }  // gerar imagem final // gerar imagem final }  // gerar imagem final  // gerar imagem final // gerar imagem final } 
-      photoPreview.src = canvas.toDataURL("image/png");
- #Instruções { previewContainer.style.display = "flex";
- cor: #fff; 
-
- Peso da fonte: Bold; saveBtn.onclick = () => {
- cor de fundo: RGBA (0,0.6); const a = document.createElement("a");
- preenchimento: 10px 12px; a.href = photoPreview.src;
- raio de fronteira: 8px; a.download = "foto-moldura.png";
- Margem-topo: 10px; a.click();
-
-       text-align: center; 
- Largura máxima: 90%; };
-
- </estilo> retryBtn.onclick = () => {
-<cabeça>previewContainer.style.display = "none";
-      instructions.style.display = "none";
+    retryBtn.onclick = () => {
+      previewContainer.style.display = 'none';
+      instructions.style.display = 'none';
     };
 
     startCamera();
