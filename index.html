@@ -1,6 +1,8 @@
-<!DOCTYPE html>
+
+    <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <!-- Estrutura base da câmera com moldura | versão somente FOTO -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ANTHONY FAZ 1 ANINHO</title>
@@ -15,14 +17,16 @@
       font-family: sans-serif;
     }
 
-    #video, #overlay, #beautyCanvas {
+    #video, #overlay {
       position: absolute;
       width: 100vw;
       height: 100vh;
       object-fit: cover;
     }
 
-    #overlay { pointer-events: none; }
+    #overlay {
+      pointer-events: none;
+    }
 
     #buttons {
       position: absolute;
@@ -86,18 +90,18 @@
       text-align: center;
       max-width: 90%;
     }
-
   </style>
 </head>
 
 <body>
   <video id="video" autoplay muted playsinline></video>
-  <canvas id="beautyCanvas"></canvas>
-  <img id="overlay" src="moldura.png" alt="moldura" />
+
+  <!-- SUA MOLDURA -->
+  <img id="overlay" src="moldura.png" alt="Moldura" />
 
   <div id="buttons">
-    <button id="switch-camera">🔄</button>
-    <button id="capture">📸</button>
+    <button id="switch-camera" title="Trocar câmera">🔄</button>
+    <button id="capture" title="Tirar foto">📸</button>
   </div>
 
   <canvas id="canvas" style="display:none;"></canvas>
@@ -115,13 +119,11 @@
 
   <script>
     const video = document.getElementById('video');
-    const beautyCanvas = document.getElementById('beautyCanvas');
     const overlay = document.getElementById('overlay');
     const canvas = document.getElementById('canvas');
 
-    const switchCameraBtn = document.getElementById('switch-camera');
     const captureBtn = document.getElementById('capture');
-
+    const switchCameraBtn = document.getElementById('switch-camera');
     const previewContainer = document.getElementById('preview-container');
     const photoPreview = document.getElementById('photo-preview');
     const saveBtn = document.getElementById('save-btn');
@@ -131,75 +133,78 @@
     let usingFrontCamera = true;
     let stream;
 
-    const ctxBeauty = beautyCanvas.getContext("2d");
+    const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     async function startCamera() {
-      if (stream) stream.getTracks().forEach(t => t.stop());
-
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: usingFrontCamera ? "user" : "environment",
-        }
-      });
-
-      video.srcObject = stream;
-      video.style.transform = usingFrontCamera ? "scaleX(-1)" : "scaleX(1)";
-
-      requestAnimationFrame(beautyLoop);
-    }
-
-    // 📌 Loop de suavização da pele
-    function beautyLoop() {
-      const w = beautyCanvas.width = video.videoWidth;
-      const h = beautyCanvas.height = video.videoHeight;
-
-      if (w && h) {
-        ctxBeauty.filter = "blur(4px) brightness(1.05)"; 
-        ctxBeauty.drawImage(video, 0, 0, w, h);
-
-        ctxBeauty.globalAlpha = 0.65; 
-        ctxBeauty.filter = "none";
-        ctxBeauty.drawImage(video, 0, 0, w, h);
-
-        ctxBeauty.globalAlpha = 1;
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
       }
 
-      requestAnimationFrame(beautyLoop);
+      const constraints = {
+        video: {
+          facingMode: usingFrontCamera ? "user" : "environment",
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        }
+      };
+
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = stream;
+
+      video.style.transform = usingFrontCamera ? "scaleX(-1)" : "scaleX(1)";
     }
 
-    // Trocar câmera
     switchCameraBtn.onclick = () => {
       usingFrontCamera = !usingFrontCamera;
       startCamera();
     };
 
-    // Tirar foto
     captureBtn.onclick = () => {
-      const w = canvas.width = beautyCanvas.width;
-      const h = canvas.height = beautyCanvas.height;
+      if (!stream) return;
 
-      const ctx = canvas.getContext("2d");
+      const track = stream.getVideoTracks()[0];
+      const settings = track.getSettings();
+      const width = settings.width;
+      const height = settings.height;
 
-      ctx.drawImage(beautyCanvas, 0, 0, w, h);
-      ctx.drawImage(overlay, 0, 0, w, h);
+      canvas.width = width;
+      canvas.height = height;
 
-      photoPreview.src = canvas.toDataURL("image/png");
-      previewContainer.style.display = "flex";
+      const ctx = canvas.getContext('2d');
+
+      if (usingFrontCamera) {
+        ctx.translate(width, 0);
+        ctx.scale(-1, 1);
+      }
+
+      ctx.drawImage(video, 0, 0, width, height);
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.drawImage(overlay, 0, 0, width, height);
+
+      const dataUrl = canvas.toDataURL('image/png');
+      photoPreview.src = dataUrl;
+
+      previewContainer.style.display = 'flex';
     };
 
     saveBtn.onclick = () => {
-      const link = document.createElement("a");
-      link.download = "foto-moldura.png";
+      const link = document.createElement('a');
+      link.download = 'foto-moldura.png';
       link.href = photoPreview.src;
       link.click();
+
+      if (isiOS) {
+        instructions.style.display = 'block';
+      }
     };
 
     retryBtn.onclick = () => {
-      previewContainer.style.display = "none";
+      previewContainer.style.display = 'none';
+      instructions.style.display = 'none';
     };
 
     startCamera();
   </script>
-
 </body>
 </html>
