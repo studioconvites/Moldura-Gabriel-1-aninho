@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -12,8 +13,9 @@
       height: 100%;
       overflow: hidden;
       background: #000;
-      font-family: sans-serif;
-    }
+      font-family: sans-serif; 
+      filter: brightness(1.12) contrast(1.05) saturate(1.15) sepia(0.08) blur(0.5px);
+    }   }
     #video, #overlay {
       position: absolute;
       width: 100vw;
@@ -162,10 +164,6 @@
   <div id="buttons">
     <button id="switch-camera" title="Trocar câmera">🔄</button>
     <button id="capture" title="Tirar foto">📸</button>
-    <button id="start-recording" title="Gravar vídeo">🎥</button>
-    <button id="stop-recording" title="Parar gravação" style="display:none;">⏹</button>
-  </div>
-
   <canvas id="canvas" style="display:none;"></canvas>
   <canvas id="recordingCanvas" style="display:none;"></canvas>
 
@@ -408,45 +406,6 @@
         combinedStream.addTrack(audioTracks[0]);
       }
 
-      let options = {};
-      recordedMimeType = 'video/webm';
-
-      try {
-        if (isiOS) {
-          options.mimeType = 'video/mp4';
-          recordedMimeType = 'video/mp4';
-        } else {
-          if (typeof MediaRecorder !== 'undefined') {
-            if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) {
-              options.mimeType = 'video/webm;codecs=vp9,opus';
-              recordedMimeType = 'video/webm';
-            } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
-              options.mimeType = 'video/webm;codecs=vp8,opus';
-              recordedMimeType = 'video/webm';
-            }
-          }
-        }
-
-        mediaRecorder = new MediaRecorder(combinedStream, options);
-      } catch (e) {
-        console.error('Erro ao iniciar MediaRecorder:', e);
-        alert('Este navegador não suporta gravação de vídeo com som nesta moldura. As fotos vão funcionar normalmente. 🥹');
-        isRecording = false;
-        stopRecordingTimer();
-        startRecordBtn.style.display = 'inline-block';
-        stopRecordBtn.style.display = 'none';
-        return;
-      }
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          recordedChunks.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
-        isRecording = false;
-        stopRecordingTimer();
 
         const blob = new Blob(recordedChunks, { type: recordedMimeType });
 
